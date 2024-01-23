@@ -10,6 +10,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Chart from '../components/Chart';
+import { searchUsers, getUserDetails } from '../services/api';
 
 const SearchScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -18,39 +19,6 @@ const SearchScreen = ({ navigation }) => {
   useEffect(() => {
     getTenUsers();
   }, []);
-
-  const getTenUsers = async () => {
-    try {
-      if (isValidSearch()) {
-        const response = await axios.get(
-          'https://api.github.com/search/users',
-          {
-            params: {
-              q: search,
-            },
-          },
-        );
-        const userFollowers = await Promise.all(
-          response.data.items.slice(0, 10).map(async (user) => {
-            const userDetailsResponse = await axios.get(
-              `https://api.github.com/users/${user.login}`,
-            );
-            const { login, id, followers } = userDetailsResponse.data;
-
-            return {
-              login,
-              id,
-              followers,
-            };
-          }),
-        );
-
-        setUsers(userFollowers);
-      }
-    } catch (error) {
-      console.error('Error al obtener usuarios:', error);
-    }
-  };
 
   const isValidSearch = () => {
     const trimmedSearchText = search.trim().toLowerCase();
@@ -66,6 +34,30 @@ const SearchScreen = ({ navigation }) => {
       return false;
     }
     return true;
+  };
+
+  const getTenUsers = async () => {
+    try {
+      if (isValidSearch()) {
+        const usersData = await searchUsers(search);
+        const userFollowers = await Promise.all(
+          usersData.slice(0, 10).map(async (user) => {
+            const userDetails = await getUserDetails(user.login);
+            const { login, id, followers } = userDetails;
+
+            return {
+              login,
+              id,
+              followers,
+            };
+          }),
+        );
+
+        setUsers(userFollowers);
+      }
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error);
+    }
   };
 
   const handleSearch = () => {
