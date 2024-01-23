@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Chart from '../components/Chart';
 
 const SearchScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -29,7 +30,22 @@ const SearchScreen = ({ navigation }) => {
             },
           },
         );
-        setUsers(response.data.items.slice(0, 10));
+        const userFollowers = await Promise.all(
+          response.data.items.slice(0, 10).map(async (user) => {
+            const userDetailsResponse = await axios.get(
+              `https://api.github.com/users/${user.login}`,
+            );
+            const { login, id, followers } = userDetailsResponse.data;
+
+            return {
+              login,
+              id,
+              followers,
+            };
+          }),
+        );
+
+        setUsers(userFollowers);
       }
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
@@ -55,6 +71,7 @@ const SearchScreen = ({ navigation }) => {
   const handleSearch = () => {
     getTenUsers();
   };
+
   return (
     <View>
       <TextInput
@@ -73,14 +90,23 @@ const SearchScreen = ({ navigation }) => {
               navigation.navigate('Details', { username: item.login })
             }
           >
-            <Text>{`Username:${item.login},ID:${item.id}`}</Text>
+            <View style={styles.view}>
+              <Text>{`Username: ${item.login}`}</Text>
+              <Text>{`ID: ${item.id}`}</Text>
+            </View>
           </TouchableOpacity>
         )}
       />
+      {users.length > 0 && <Chart data={users} />}
     </View>
   );
 };
 
 export default SearchScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  view: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+});
