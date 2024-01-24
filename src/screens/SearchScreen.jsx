@@ -16,6 +16,7 @@ import StartButton from '../components/StartButton';
 const SearchScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
+  const [usersLoaded, setUsersLoaded] = useState(false);
 
   useEffect(() => {
     getTenUsers();
@@ -55,6 +56,7 @@ const SearchScreen = ({ navigation }) => {
         );
 
         setUsers(userFollowers);
+        setUsersLoaded(true);
       }
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
@@ -64,9 +66,12 @@ const SearchScreen = ({ navigation }) => {
   const handleSearch = () => {
     getTenUsers();
   };
+  const navigateToFollowersChart = () => {
+    navigation.navigate('FollowersChart', { users });
+  };
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.view}>
         <TextInput
           placeholder="Ingresa el nombre de un usuario"
@@ -81,26 +86,31 @@ const SearchScreen = ({ navigation }) => {
         />
       </View>
 
-      <View style={styles.flatList}>
-        <FlatList
-          data={users}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Details', { username: item.login })
-              }
-            >
-              <View>
-                <Text>{`Username: ${item.login}`}</Text>
-                <Text>{`ID: ${item.id}`}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Details', { username: item.login })
+            }
+          >
+            <View style={styles.userItemContainer}>
+              <Text
+                style={styles.usernameText}
+              >{`Username: ${item.login}`}</Text>
+              <Text style={styles.idText}>{`ID: ${item.id}`}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+      {usersLoaded && (
+        <StartButton
+          title="Ver gráfico de seguidores"
+          onPress={navigateToFollowersChart}
+          style={styles.button}
         />
-      </View>
-
-      {users.length > 0 && <Chart data={users} />}
+      )}
     </View>
   );
 };
@@ -108,6 +118,9 @@ const SearchScreen = ({ navigation }) => {
 export default SearchScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'black',
+  },
   view: {
     alignItems: 'center',
     paddingTop: 20,
@@ -123,9 +136,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#D5DBDB',
   },
   button: {
-    margin: 20,
+    margin: 50,
   },
-  flatList: {
-    backgroundColor: 'green',
+  flatListContainer: {
+    flex: 1,
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  userItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 5,
+    padding: 8,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    elevation: 3,
+  },
+  usernameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  idText: {
+    fontSize: 14,
+    color: '#555',
   },
 });

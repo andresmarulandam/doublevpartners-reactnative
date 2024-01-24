@@ -14,8 +14,6 @@ const Chart = ({ data }) => {
 
   return (
     <View>
-      <Text>Número de Seguidores de los 10 Primeros Usuarios</Text>
-
       <BarChart
         data={chartData}
         width={Dimensions.get('window').width - 10}
