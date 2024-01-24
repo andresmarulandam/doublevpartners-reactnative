@@ -35,6 +35,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
+    marginTop: 20,
   },
 
   mainView: {

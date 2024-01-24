@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Chart from '../components/Chart';
 import { searchUsers, getUserDetails } from '../services/api';
+import StartButton from '../components/StartButton';
 
 const SearchScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -66,29 +67,39 @@ const SearchScreen = ({ navigation }) => {
 
   return (
     <View>
-      <TextInput
-        placeholder="Ingresa el nombre de un usuario"
-        value={search}
-        onChangeText={setSearch}
-      />
-      <Button title="Buscar" onPress={handleSearch} />
+      <View style={styles.view}>
+        <TextInput
+          placeholder="Ingresa el nombre de un usuario"
+          value={search}
+          onChangeText={setSearch}
+          style={styles.textInput}
+        />
+        <StartButton
+          title="Buscar"
+          onPress={handleSearch}
+          style={styles.button}
+        />
+      </View>
 
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('Details', { username: item.login })
-            }
-          >
-            <View style={styles.view}>
-              <Text>{`Username: ${item.login}`}</Text>
-              <Text>{`ID: ${item.id}`}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+      <View style={styles.flatList}>
+        <FlatList
+          data={users}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Details', { username: item.login })
+              }
+            >
+              <View>
+                <Text>{`Username: ${item.login}`}</Text>
+                <Text>{`ID: ${item.id}`}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
       {users.length > 0 && <Chart data={users} />}
     </View>
   );
@@ -98,7 +109,23 @@ export default SearchScreen;
 
 const styles = StyleSheet.create({
   view: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  textInput: {
+    width: '95%',
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    marginBottom: 10,
+    backgroundColor: '#D5DBDB',
+  },
+  button: {
+    margin: 20,
+  },
+  flatList: {
+    backgroundColor: 'green',
   },
 });
