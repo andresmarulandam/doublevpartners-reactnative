@@ -18,9 +18,33 @@ export default function App() {
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="FollowersChart" component={FollowersChartScreen} />
-        <Stack.Screen name="Details" component={UserDetailsScreen} />
+        <Stack.Screen
+          name="Search"
+          component={SearchScreen}
+          options={{
+            headerTransparent: true,
+            headerTintColor: '#fff',
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="FollowersChart"
+          component={FollowersChartScreen}
+          options={{
+            headerTransparent: true,
+            headerTintColor: '#fff',
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={UserDetailsScreen}
+          options={{
+            headerTransparent: true,
+            headerTintColor: '#fff',
+            headerTitleAlign: 'center',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,6 +1,7 @@
 import {
   Button,
   FlatList,
+  ImageBackground,
   StyleSheet,
   Text,
   TextInput,
@@ -71,55 +72,64 @@ const SearchScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.view}>
-        <TextInput
-          placeholder="Ingresa el nombre de un usuario"
-          value={search}
-          onChangeText={setSearch}
-          style={styles.textInput}
-        />
-        <StartButton
-          title="Buscar"
-          onPress={handleSearch}
-          style={styles.button}
-        />
-      </View>
+    <ImageBackground
+      source={require('../assets/pexels4.jpg')}
+      style={styles.backgroundImage}
+    >
+      <View style={styles.container}>
+        <View style={styles.view}>
+          <TextInput
+            placeholder="Ingresa el nombre de un usuario"
+            value={search}
+            onChangeText={setSearch}
+            style={styles.textInput}
+          />
+          <StartButton
+            title="Buscar"
+            onPress={handleSearch}
+            style={styles.button}
+          />
+        </View>
 
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('Details', { username: item.login })
-            }
-          >
-            <View style={styles.userItemContainer}>
-              <Text
-                style={styles.usernameText}
-              >{`Username: ${item.login}`}</Text>
-              <Text style={styles.idText}>{`ID: ${item.id}`}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-      {usersLoaded && (
-        <StartButton
-          title="Ver gráfico de seguidores"
-          onPress={navigateToFollowersChart}
-          style={styles.button}
+        <FlatList
+          data={users}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Details', { username: item.login })
+              }
+            >
+              <View style={styles.userItemContainer}>
+                <Text
+                  style={styles.usernameText}
+                >{`Username: ${item.login}`}</Text>
+                <Text style={styles.idText}>{`ID: ${item.id}`}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
         />
-      )}
-    </View>
+        {usersLoaded && (
+          <StartButton
+            title="Ver gráfico de seguidores"
+            onPress={navigateToFollowersChart}
+            style={styles.button}
+          />
+        )}
+      </View>
+    </ImageBackground>
   );
 };
 
 export default SearchScreen;
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    marginTop: 20,
+  },
   container: {
-    backgroundColor: 'black',
+    marginTop: 70,
   },
   view: {
     alignItems: 'center',
@@ -133,7 +143,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 10,
     marginBottom: 10,
-    backgroundColor: '#D5DBDB',
+    backgroundColor: 'rgba(213, 219, 219, 0.2)',
+    color: 'white',
   },
   button: {
     margin: 50,
@@ -147,18 +158,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginBottom: 5,
+    marginHorizontal: 10,
     padding: 8,
-    backgroundColor: 'red',
+    backgroundColor: 'rgba(213, 219, 219, 0.1)',
     borderRadius: 10,
     elevation: 3,
   },
   usernameText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginBottom: 5,
+    color: 'white',
   },
   idText: {
     fontSize: 14,
-    color: '#555',
+    color: 'white',
   },
 });
